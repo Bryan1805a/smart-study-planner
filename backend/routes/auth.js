@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 const { PrismaClient } = require("@prisma/client");
 const { PrismaPg } = require("@prisma/adapter-pg");
 
+const verifyToken = require("../middleware/verifyToken");
+
 const adapter = new PrismaPg({connectionString: process.env.DATABASE_URL});
 const prisma = new PrismaClient({adapter});
 
@@ -98,6 +100,25 @@ router.post("/login", async (req, res) => {
 router.post("/logout", (req, res) => {
     res.clearCookie("token");
     res.status(200).json({message: "Logged out successfully"});
+});
+
+// Get current user (Protected Route)
+router.get("/me", verifyToken, async (req, res) => {
+    try {
+        // Get req.userId from verifyToken middleware
+        const user = await prisma.user.findUnique({
+            where: {id: req.userId},
+            select: {id: true, email: true}
+        });
+
+        if (!user) {
+            return res.status(404).json({error: "User not found."});
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({error: "Server error"});
+    }
 });
 
 module.exports = router;
