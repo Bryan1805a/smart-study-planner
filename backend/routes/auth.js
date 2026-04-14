@@ -55,4 +55,49 @@ router.post("/register", async (req, res) => {
     }
 });
 
+// Login route
+router.post("/login", async (req, res) => {
+    try {
+        const {email, password} = req.body;
+
+        // Find the user in the database
+        const user = await prisma.user.findUnique({ where: {email} });
+        if (!user) {
+            return res.status(400).json({error: "Invalid email or password"});
+        }
+
+        // Compare provided password with the hashed password in database
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({error: "Invalid email or password"});
+        }
+
+        // Create a new JWT token
+        const token = jwt.sign(
+            {userId: user.id},
+            process.env.JWT_SECRET,
+            {expiresIn: '7d'}
+        );
+
+        // Send the token in HTTP only cookie
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        res.status(200).json({message: "Logged in successfully!", userId: user.id});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({error: "Server error during login"});
+    }
+});
+
+// Logout route
+router.post("/logout", (req, res) => {
+    res.clearCookie("token");
+    res.status(200).json({message: "Logged out successfully"});
+});
+
 module.exports = router;
