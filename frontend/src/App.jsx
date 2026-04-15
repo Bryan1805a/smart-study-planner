@@ -1,21 +1,17 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Register from './pages/Register';
-
-// A simple temporary Home component
-function Home() {
-  return (
-    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center text-white">
-      <h1 className="text-5xl font-bold mb-6 text-blue-400">Smart Study Planner</h1>
-      <Link to="/register" className="text-blue-400 hover:underline text-xl">Go to Registration Page</Link>
-    </div>
-  );
-}
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      {/* Redirect the base URL straight to login for now */}
+      <Route path="/" element={<Navigate to="/login" />} />
+      
       <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={<Dashboard />} />
     </Routes>
   );
 }
