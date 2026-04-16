@@ -7,6 +7,7 @@ dotenv.config();
 
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth');
+const subjectRoutes = require('./routes/subjects');
 
 // Init
 const app = express();
@@ -22,6 +23,7 @@ app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/subjects', subjectRoutes);
 
 app.get('/', (req, res) => {
   res.send('The server is running.');
