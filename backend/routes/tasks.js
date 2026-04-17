@@ -79,3 +79,24 @@ router.patch("/:id/complete", verifyToken, async (req, res) => {
         res.status(500).json({error: "Failed to update task"});
     }
 });
+
+// Delete a task
+router.delete("/:id", verifyToken, async (req, res) => {
+    try {
+        const taskId = req.params.id;
+
+        // Verify owner ship
+        const task = await prisma.task.findUnique({where: {id: taskId}});
+        if (!task || task.userId !== req.userId) {
+            return res.status(403).json({error: "Not authorized"});
+        }
+
+        await prisma.task.delete({where: {id: taskId}});
+        res.status(200).json({message: "Task deleted"});
+    } catch (error) {
+        res.status(500).json({error: "Failed to delete task"});
+    }
+});
+
+
+module.exports = router;
