@@ -11,7 +11,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // 1. Verify User
+        // Verify User
         const userRes = await fetch('http://localhost:5000/api/auth/me', {
           credentials: 'include',
         });
@@ -23,9 +23,9 @@ export default function Dashboard() {
         const userData = await userRes.json();
         setUser(userData);
 
-        // 2. Fetch Subjects
+        // Fetch Subjects
         const subjectsRes = await fetch('http://localhost:5000/api/subjects', {
-          credentials: 'include', // MUST include this to send the cookie!
+          credentials: 'include',
         });
 
         if (subjectsRes.ok) {
@@ -42,7 +42,7 @@ export default function Dashboard() {
     fetchDashboardData();
   }, [navigate]);
 
-  // --- CREATE SUBJECT ---
+  // Create subject
   const handleCreateSubject = async (e) => {
     e.preventDefault();
     if (!newSubjectName.trim()) return;
@@ -57,16 +57,15 @@ export default function Dashboard() {
 
       if (res.ok) {
         const newSubject = await res.json();
-        // Update the state immediately so the UI refreshes
         setSubjects([...subjects, newSubject]);
-        setNewSubjectName(''); // Clear the input field
+        setNewSubjectName('');
       }
     } catch (err) {
       console.error('Failed to create subject', err);
     }
   };
 
-  // --- DELETE SUBJECT ---
+  // Delete subject
   const handleDeleteSubject = async (id) => {
     try {
       const res = await fetch(`http://localhost:5000/api/subjects/${id}`, {
@@ -83,7 +82,7 @@ export default function Dashboard() {
     }
   };
 
-  // --- LOGOUT ---
+  // Logout
   const handleLogout = async () => {
     await fetch('http://localhost:5000/api/auth/logout', { 
       method: 'POST', 
