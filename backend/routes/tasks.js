@@ -56,3 +56,26 @@ router.post("/", verifyToken, async (req, res) => {
         res.status(500).json({error: "Failed to create task"});
     }
 });
+
+// Toggle task completion (UPDATE)
+router.patch("/:id/complete", verifyToken, async (req, res) => {
+    try {
+        const taskId = req.params.id;
+        const {isCompleted} = req.body;
+
+        // Verify ownership
+        const task = await prisma.task.findUnique({where: {id: taskId}});
+        if (!task || task.userId !== req.userId) {
+            return res.status(403).json({error: "Not authorized"});
+        }
+
+        const updatedTask = await prisma.task.update({
+            where: {id: taskId},
+            data: {isCompleted},
+        });
+
+        res.status(200).json(updatedTask);
+    } catch (error) {
+        res.status(500).json({error: "Failed to update task"});
+    }
+});
