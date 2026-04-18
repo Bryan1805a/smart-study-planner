@@ -137,7 +137,21 @@ export default function Dashboard() {
             <h1 className="text-4xl font-bold text-blue-400 mb-1">My Dashboard</h1>
             <p className="text-gray-400">Logged in as: <span className="text-green-400 font-mono">{user?.email}</span></p>
           </div>
-          <button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition">Logout</button>
+          
+          <div className="flex gap-4"> {/* <-- Wrapped buttons in a flex container */}
+            <button 
+              onClick={() => navigate('/timer')} // <-- NEW BUTTON
+              className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded transition font-semibold"
+            >
+              ⏱️ Focus Timer
+            </button>
+            <button 
+              onClick={handleLogout} 
+              className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition"
+            >
+              Logout
+            </button>
+          </div>
         </div>
 
         {/* Main Grid Layout */}
