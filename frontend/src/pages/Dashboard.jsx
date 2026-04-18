@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ProgressChart from '../components/ProgressChart';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -157,24 +158,32 @@ export default function Dashboard() {
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* LEFT COLUMN: Subjects */}
-          <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 h-fit">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-200">Subjects</h2>
-            <form onSubmit={handleCreateSubject} className="flex gap-2 mb-6">
-              <input 
-                type="text" value={newSubjectName} onChange={(e) => setNewSubjectName(e.target.value)}
-                placeholder="New Subject..." className="flex-1 bg-gray-700 text-white rounded p-2 outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button type="submit" className="bg-blue-600 hover:bg-blue-700 px-4 rounded font-bold">+</button>
-            </form>
-            <ul className="space-y-2">
-              {subjects.map((subject) => (
-                <li key={subject.id} className="flex justify-between items-center bg-gray-700 p-3 rounded border border-gray-600">
-                  <span className="font-medium">{subject.name}</span>
-                  <button onClick={() => handleDeleteSubject(subject.id)} className="text-red-400 hover:text-red-300 text-sm">Delete</button>
-                </li>
-              ))}
-            </ul>
+          {/* LEFT COLUMN: Subjects & Analytics */}
+          <div className="flex flex-col gap-8">
+            
+            {/* Subject List Box */}
+            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 h-fit">
+              <h2 className="text-2xl font-semibold mb-4 text-gray-200">Subjects</h2>
+              <form onSubmit={handleCreateSubject} className="flex gap-2 mb-6">
+                <input 
+                  type="text" value={newSubjectName} onChange={(e) => setNewSubjectName(e.target.value)}
+                  placeholder="New Subject..." className="flex-1 bg-gray-700 text-white rounded p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button type="submit" className="bg-blue-600 hover:bg-blue-700 px-4 rounded font-bold">+</button>
+              </form>
+              <ul className="space-y-2">
+                {subjects.map((subject) => (
+                  <li key={subject.id} className="flex justify-between items-center bg-gray-700 p-3 rounded border border-gray-600">
+                    <span className="font-medium">{subject.name}</span>
+                    <button onClick={() => handleDeleteSubject(subject.id)} className="text-red-400 hover:text-red-300 text-sm">Delete</button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* NEW: Analytics Box */}
+            <ProgressChart tasks={tasks} />
+
           </div>
 
           {/* RIGHT COLUMN: Tasks */}
