@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth');
 const subjectRoutes = require('./routes/subjects');
 const taskRoutes = require('./routes/tasks');
+const suggestionRoutes = require('./routes/suggestions');
 
 // Init
 const app = express();
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/subjects', subjectRoutes);
 app.use('/api/tasks', taskRoutes);
+app.use('/api/suggestions', suggestionRoutes);
 
 app.get('/', (req, res) => {
   res.send('The server is running.');
