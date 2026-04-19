@@ -24,6 +24,8 @@ const localizer = dateFnsLocalizer({
 export default function CalendarPage() {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [view, setView] = useState('month');
+    const [date, setDate] = useState(new Date());
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -100,6 +102,12 @@ export default function CalendarPage() {
                         style={{ height: '100%' }}
                         eventPropGetter={eventStyleGetter}
                         views={['month', 'week', 'agenda']} // Let the user switch between views!
+                        toolbar={true}
+                        defaultDate={new Date()}
+                        view={view}
+                        date={date}
+                        onView={(nextView) => setView(nextView)}
+                        onNavigate={(nextDate) => setDate(nextDate)}
                     />
                 </div>
 
