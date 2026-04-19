@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import ProgressChart from '../components/ProgressChart';
+import StudySuggestion from '../components/StudySuggestion';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -144,13 +146,13 @@ export default function Dashboard() {
               onClick={() => navigate('/calendar')} // <-- NEW BUTTON
               className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition font-semibold"
             >
-              📅 Calendar
+              Calendar
             </button>
             <button 
               onClick={() => navigate('/timer')} // <-- NEW BUTTON
               className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded transition font-semibold"
             >
-              ⏱️ Focus Timer
+              Focus Timer
             </button>
             <button 
               onClick={handleLogout} 
@@ -160,6 +162,9 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
+
+        {/* The Smart Assistant Banner */}
+        <StudySuggestion />
 
         {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
