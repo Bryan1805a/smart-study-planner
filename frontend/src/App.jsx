@@ -3,6 +3,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Timer from './pages/Timer';
+import CalendarPage from './pages/CalendarPage';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path='/timer' element={<Timer />} />
+      <Route path='/calendar' element={<CalendarPage />} />
     </Routes>
   );
 }
