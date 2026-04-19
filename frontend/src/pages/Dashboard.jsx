@@ -141,6 +141,12 @@ export default function Dashboard() {
           
           <div className="flex gap-4"> {/* <-- Wrapped buttons in a flex container */}
             <button 
+              onClick={() => navigate('/calendar')} // <-- NEW BUTTON
+              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition font-semibold"
+            >
+              📅 Calendar
+            </button>
+            <button 
               onClick={() => navigate('/timer')} // <-- NEW BUTTON
               className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded transition font-semibold"
             >
