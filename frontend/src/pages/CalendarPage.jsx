@@ -31,7 +31,7 @@ export default function CalendarPage() {
     useEffect(() => {
         const fetchTasksForCalendar = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/tasks", {credentials: "include"});
+                const res = await fetch("https://smart-study-planner-api-k97w.onrender.com/api/tasks", {credentials: "include"});
 
                 if (res.ok) {
                     const tasks = await res.json();

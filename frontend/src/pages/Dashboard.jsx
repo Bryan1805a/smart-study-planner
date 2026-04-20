@@ -22,16 +22,16 @@ export default function Dashboard() {
     const fetchDashboardData = async () => {
       try {
         // Verify User
-        const userRes = await fetch('http://localhost:5000/api/auth/me', { credentials: 'include' });
+        const userRes = await fetch('https://smart-study-planner-api-k97w.onrender.com/api/auth/me', { credentials: 'include' });
         if (!userRes.ok) return navigate('/login');
         setUser(await userRes.json());
 
         // Fetch Subjects
-        const subjectsRes = await fetch('http://localhost:5000/api/subjects', { credentials: 'include' });
+        const subjectsRes = await fetch('https://smart-study-planner-api-k97w.onrender.com/api/subjects', { credentials: 'include' });
         if (subjectsRes.ok) setSubjects(await subjectsRes.json());
 
         // Fetch Tasks
-        const tasksRes = await fetch('http://localhost:5000/api/tasks', { credentials: 'include' });
+        const tasksRes = await fetch('https://smart-study-planner-api-k97w.onrender.com/api/tasks', { credentials: 'include' });
         if (tasksRes.ok) setTasks(await tasksRes.json());
 
       } catch (err) {
@@ -49,7 +49,7 @@ export default function Dashboard() {
     e.preventDefault();
     if (!newSubjectName.trim()) return;
     try {
-      const res = await fetch('http://localhost:5000/api/subjects', {
+      const res = await fetch('https://smart-study-planner-api-k97w.onrender.com/api/subjects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newSubjectName }),
@@ -64,7 +64,7 @@ export default function Dashboard() {
 
   const handleDeleteSubject = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/subjects/${id}`, { method: 'DELETE', credentials: 'include' });
+      const res = await fetch(`https://smart-study-planner-api-k97w.onrender.com/api/subjects/${id}`, { method: 'DELETE', credentials: 'include' });
       if (res.ok) {
         setSubjects(subjects.filter((s) => s.id !== id));
         // Also remove any tasks associated with this subject from the UI
@@ -79,7 +79,7 @@ export default function Dashboard() {
     if (!newTaskTitle.trim() || !newTaskSubjectId) return;
 
     try {
-      const res = await fetch('http://localhost:5000/api/tasks', {
+      const res = await fetch('https://smart-study-planner-api-k97w.onrender.com/api/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -101,7 +101,7 @@ export default function Dashboard() {
 
   const handleToggleTask = async (id, currentStatus) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/tasks/${id}/complete`, {
+      const res = await fetch(`https://smart-study-planner-api-k97w.onrender.com/api/tasks/${id}/complete`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isCompleted: !currentStatus }),
@@ -117,14 +117,14 @@ export default function Dashboard() {
 
   const handleDeleteTask = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/tasks/${id}`, { method: 'DELETE', credentials: 'include' });
+      const res = await fetch(`https://smart-study-planner-api-k97w.onrender.com/api/tasks/${id}`, { method: 'DELETE', credentials: 'include' });
       if (res.ok) setTasks(tasks.filter((t) => t.id !== id));
     } catch (err) { console.error(err); }
   };
 
   // Logout
   const handleLogout = async () => {
-    await fetch('http://localhost:5000/api/auth/logout', { method: 'POST', credentials: 'include' });
+    await fetch('https://smart-study-planner-api-k97w.onrender.com/api/auth/logout', { method: 'POST', credentials: 'include' });
     navigate('/login');
   };
 

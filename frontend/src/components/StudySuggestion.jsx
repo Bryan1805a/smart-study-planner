@@ -6,7 +6,7 @@ export default function StudySuggestion() {
     useEffect(() => {
         const fetchSuggestion = async () => {
             try {
-                const res = await fetch("http://localhost:5000/api/suggestions", {credentials: "include"});
+                const res = await fetch("https://smart-study-planner-api-k97w.onrender.com/api/suggestions", {credentials: "include"});
 
                 if (res.ok) {
                     const data = await res.json();
