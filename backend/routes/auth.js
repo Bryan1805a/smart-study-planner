@@ -12,6 +12,13 @@ const prisma = new PrismaClient({adapter});
 
 const router = express.Router();
 
+const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+};
+
 // Register route
 router.post("/register", async (req, res) => {
     try {
@@ -43,12 +50,7 @@ router.post("/register", async (req, res) => {
         );
 
         // Send token via HTTP Only cookie
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: 'lax',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
+        res.cookie("token", token, cookieOptions);
 
         res.status(201).json({message: "User registered successfully", userId: newUser.id});
     } catch (error) {
@@ -82,12 +84,7 @@ router.post("/login", async (req, res) => {
         );
 
         // Send the token in HTTP only cookie
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
+        res.cookie("token", token, cookieOptions);
 
         res.status(200).json({message: "Logged in successfully!", userId: user.id});
     } catch (error) {
@@ -98,7 +95,11 @@ router.post("/login", async (req, res) => {
 
 // Logout route
 router.post("/logout", (req, res) => {
-    res.clearCookie("token");
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
     res.status(200).json({message: "Logged out successfully"});
 });
 
