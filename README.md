@@ -3,7 +3,7 @@
 A modern, full-stack web application designed to help students manage subjects, track tasks, set deadlines, and optimize their focus using built-in productivity tools and smart algorithms.
 
 ## Live Demo
-* **Frontend:** https://smart-study-planner-rose.vercel.app/
+* **Frontend:** https://smart-study-planner-kohl-ten.vercel.app
 * **Backend API:** https://smart-study-planner-api-k97w.onrender.com
 
 ---
