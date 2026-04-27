@@ -168,7 +168,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Subjects */}
           <div className="bg-gray-900/60 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50">
-            <h2 className="text-xl font-semibold mb-4 text-white">Subjects |</h2>
+            <h2 className="text-xl font-semibold mb-4 text-white">Subjects</h2>
             <form onSubmit={handleCreateSubject} className="flex gap-2 mb-4">
               <input 
                 type="text" 
