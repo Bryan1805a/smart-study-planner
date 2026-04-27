@@ -26,7 +26,7 @@ export default function StudySuggestion() {
     return (
         <div className="bg-gradient-to-r from-indigo-900 to-purple-900 p-5 rounded-lg border border-indigo-500 shadow-lg mb-8 animate-pulse-slow">
             <div className="flex items-center gap-4">
-                <div className="text-3xl">AI</div>
+                <div className="text-3xl">Suggestion</div>
                 <p className="text-white font-medium text-lg tracking-wide">
                     {suggestion}
                 </p>
