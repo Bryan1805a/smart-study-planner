@@ -34,8 +34,8 @@ export default function Register() {
     };
     
     return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-96 border border-gray-700">
+    <div className="min-h-screen flex items-center justify-center app-background">
+      <div className="bg-gray-800/80 backdrop-blur-sm p-8 rounded-2xl shadow-2xl w-96 border border-gray-600/50">
         <h2 className="text-3xl font-bold text-white mb-6 text-center">Sign Up</h2>
         
         {error && <div className="bg-red-500/10 border border-red-500 text-red-500 p-3 rounded mb-4 text-sm">{error}</div>}

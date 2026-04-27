@@ -76,11 +76,11 @@ export default function CalendarPage() {
     };
 
     if (loading) {
-        return <div className="min-h-screen bg-gray-900 flex items-center justify-center text-white">Loading...</div>;
+        return <div className="min-h-screen app-background flex items-center justify-center text-white">Loading...</div>;
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white p-8">
+        <div className="min-h-screen app-background text-white p-8">
             <div className="max-w-6xl mx-auto">
                 
                 {/* Navigation Header */}
@@ -93,7 +93,7 @@ export default function CalendarPage() {
 
                 {/* Calendar Container */}
                 {/* We wrap the calendar in a white container because its default styles are designed for a light theme */}
-                <div className="bg-white text-gray-900 p-6 rounded-lg shadow-xl h-[700px]">
+                <div className="bg-gray-100/90 backdrop-blur-sm p-6 rounded-lg shadow-xl h-[700px]">
                     <Calendar
                         localizer={localizer}
                         events={events}

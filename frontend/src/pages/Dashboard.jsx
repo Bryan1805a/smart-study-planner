@@ -128,10 +128,10 @@ export default function Dashboard() {
     navigate('/login');
   };
 
-  if (loading) return <div className="min-h-screen bg-gray-900 flex items-center justify-center text-white">Loading...</div>;
+  if (loading) return <div className="min-h-screen app-background flex items-center justify-center text-white">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <div className="min-h-screen app-background text-white p-8">
       <div className="max-w-6xl mx-auto">
         
         {/* Header */}
@@ -173,7 +173,7 @@ export default function Dashboard() {
           <div className="flex flex-col gap-8">
             
             {/* Subject List Box */}
-            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 h-fit">
+            <div className="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-600/50 h-fit">
               <h2 className="text-2xl font-semibold mb-4 text-gray-200">Subjects</h2>
               <form onSubmit={handleCreateSubject} className="flex gap-2 mb-6">
                 <input 
@@ -198,7 +198,7 @@ export default function Dashboard() {
           </div>
 
           {/* RIGHT COLUMN: Tasks */}
-          <div className="lg:col-span-2 bg-gray-800 p-6 rounded-lg border border-gray-700">
+          <div className="lg:col-span-2 bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-600/50">
             <h2 className="text-2xl font-semibold mb-4 text-gray-200">Tasks</h2>
             
             {/* Create Task Form */}

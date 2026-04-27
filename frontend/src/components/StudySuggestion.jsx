@@ -23,8 +23,8 @@ export default function StudySuggestion() {
         fetchSuggestion();
     }, []);
 
-    return (
-        <div className="bg-gradient-to-r from-indigo-900 to-purple-900 p-5 rounded-lg border border-indigo-500 shadow-lg mb-8 animate-pulse-slow">
+return (
+        <div className="bg-gradient-to-r from-indigo-900/80 to-purple-900/80 backdrop-blur-sm p-5 rounded-xl border border-indigo-500/50 shadow-lg mb-8">
             <div className="flex items-center gap-4">
                 <div className="text-3xl">Suggestion</div>
                 <p className="text-white font-medium text-lg tracking-wide">
@@ -32,5 +32,5 @@ export default function StudySuggestion() {
                 </p>
             </div>
         </div>
-  );
+    );
 }

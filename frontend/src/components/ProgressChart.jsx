@@ -3,7 +3,7 @@ import {BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend} from 
 export default function ProgressChart({tasks}) {
     if (!tasks || tasks.length === 0) {
         return (
-            <div className="h-64 flex items-center justify-center bg-gray-800 rounded-lg border border-gray-700">
+            <div className="h-64 flex items-center justify-center bg-gray-800/80 backdrop-blur-sm rounded-xl border border-gray-600/50">
                 <p className="text-gray-400 italic">Add some tasks to see your progress!</p>
             </div>
         );
@@ -39,7 +39,7 @@ export default function ProgressChart({tasks}) {
     const chartData = processData();
 
     return (
-    <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 h-80 w-full">
+    <div className="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-600/50 h-80 w-full">
       <h3 className="text-xl font-semibold mb-4 text-gray-200">Subject Progress</h3>
       
       <ResponsiveContainer width="100%" height="85%">

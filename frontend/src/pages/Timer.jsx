@@ -54,16 +54,16 @@ export default function Timer() {
     };
 
     return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-8">
+    <div className="min-h-screen app-background text-white flex flex-col items-center justify-center p-8">
       
       {/* Navigation back to Dashboard */}
       <div className="absolute top-8 left-8">
-        <Link to="/dashboard" className="text-gray-400 hover:text-white transition flex items-center gap-2">
+        <Link to="/dashboard" className="text-gray-300 hover:text-white transition flex items-center gap-2">
           ← Back to Dashboard
         </Link>
       </div>
 
-      <div className="max-w-md w-full bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 text-center">
+      <div className="max-w-md w-full bg-gray-800/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-gray-600/50 text-center">
         <h1 className="text-3xl font-bold mb-6 text-blue-400">Focus Mode</h1>
 
         {/* Mode Switchers */}
