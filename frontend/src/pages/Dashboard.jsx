@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 import ProgressChart from '../components/ProgressChart';
 import StudySuggestion from '../components/StudySuggestion';
@@ -9,8 +9,8 @@ export default function Dashboard() {
   const [subjects, setSubjects] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
   
-  // Form States
   const [newSubjectName, setNewSubjectName] = useState('');
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskSubjectId, setNewTaskSubjectId] = useState('');
@@ -21,19 +21,15 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // Verify User
         const userRes = await fetch('https://smart-study-planner-api-k97w.onrender.com/api/auth/me', { credentials: 'include' });
         if (!userRes.ok) return navigate('/login');
         setUser(await userRes.json());
 
-        // Fetch Subjects
         const subjectsRes = await fetch('https://smart-study-planner-api-k97w.onrender.com/api/subjects', { credentials: 'include' });
         if (subjectsRes.ok) setSubjects(await subjectsRes.json());
 
-        // Fetch Tasks
         const tasksRes = await fetch('https://smart-study-planner-api-k97w.onrender.com/api/tasks', { credentials: 'include' });
         if (tasksRes.ok) setTasks(await tasksRes.json());
-
       } catch (err) {
         navigate('/login');
       } finally {
@@ -44,7 +40,6 @@ export default function Dashboard() {
     fetchDashboardData();
   }, [navigate]);
 
-  // Subject function
   const handleCreateSubject = async (e) => {
     e.preventDefault();
     if (!newSubjectName.trim()) return;
@@ -67,17 +62,14 @@ export default function Dashboard() {
       const res = await fetch(`https://smart-study-planner-api-k97w.onrender.com/api/subjects/${id}`, { method: 'DELETE', credentials: 'include' });
       if (res.ok) {
         setSubjects(subjects.filter((s) => s.id !== id));
-        // Also remove any tasks associated with this subject from the UI
         setTasks(tasks.filter((t) => t.subjectId !== id)); 
       }
     } catch (err) { console.error(err); }
   };
 
-  // Task function
   const handleCreateTask = async (e) => {
     e.preventDefault();
     if (!newTaskTitle.trim() || !newTaskSubjectId) return;
-
     try {
       const res = await fetch('https://smart-study-planner-api-k97w.onrender.com/api/tasks', {
         method: 'POST',
@@ -89,12 +81,10 @@ export default function Dashboard() {
         }),
         credentials: 'include',
       });
-
       if (res.ok) {
         setTasks([...tasks, await res.json()]);
         setNewTaskTitle('');
         setNewTaskDueDate('');
-        // We leave newTaskSubjectId as is, in case they want to add multiple tasks to the same subject
       }
     } catch (err) { console.error(err); }
   };
@@ -107,7 +97,6 @@ export default function Dashboard() {
         body: JSON.stringify({ isCompleted: !currentStatus }),
         credentials: 'include',
       });
-
       if (res.ok) {
         const updatedTask = await res.json();
         setTasks(tasks.map(t => t.id === id ? { ...t, isCompleted: updatedTask.isCompleted } : t));
@@ -122,121 +111,135 @@ export default function Dashboard() {
     } catch (err) { console.error(err); }
   };
 
-  // Logout
   const handleLogout = async () => {
     await fetch('https://smart-study-planner-api-k97w.onrender.com/api/auth/logout', { method: 'POST', credentials: 'include' });
     navigate('/login');
   };
 
+  const pendingTasks = tasks.filter(t => !t.isCompleted);
+
   if (loading) return <div className="min-h-screen app-background flex items-center justify-center text-white">Loading...</div>;
 
   return (
-    <div className="min-h-screen app-background text-white p-8">
-      <div className="max-w-6xl mx-auto">
-        
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-blue-400 mb-1">My Dashboard</h1>
-            <p className="text-gray-400">Logged in as: <span className="text-green-400 font-mono">{user?.email}</span></p>
+    <div className="min-h-screen app-background flex">
+      {/* LEFT SIDEBAR */}
+      <aside className="w-64 bg-gray-900/60 backdrop-blur-md border-r border-gray-700/50 flex flex-col p-6">
+        <div className="mb-8">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-2xl font-bold text-white mb-4">
+            {user?.email?.charAt(0).toUpperCase()}
           </div>
-          
-          <div className="flex gap-4"> {/* <-- Wrapped buttons in a flex container */}
-            <button 
-              onClick={() => navigate('/calendar')} // <-- NEW BUTTON
-              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded transition font-semibold"
-            >
-              Calendar
-            </button>
-            <button 
-              onClick={() => navigate('/timer')} // <-- NEW BUTTON
-              className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded transition font-semibold"
-            >
-              Focus Timer
-            </button>
-            <button 
-              onClick={handleLogout} 
-              className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded transition"
-            >
-              Logout
-            </button>
-          </div>
+          <h2 className="text-lg font-semibold text-white">{user?.email?.split('@')[0]}</h2>
+          <p className="text-sm text-gray-400">{user?.email}</p>
         </div>
 
-        {/* The Smart Assistant Banner */}
+        <nav className="flex-1 space-y-2">
+          <button 
+            onClick={() => setActiveTab('overview')}
+            className={`w-full text-left px-4 py-3 rounded-lg transition ${activeTab === 'overview' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-800'}`}
+          >
+            Overview
+          </button>
+          <button 
+            onClick={() => navigate('/calendar')}
+            className="w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 transition"
+          >
+            Calendar
+          </button>
+          <button 
+            onClick={() => navigate('/timer')}
+            className="w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 transition"
+          >
+            Focus Timer
+          </button>
+        </nav>
+
+        <button 
+          onClick={handleLogout}
+          className="w-full text-left px-4 py-3 rounded-lg text-red-400 hover:bg-red-900/30 transition"
+        >
+          Logout
+        </button>
+      </aside>
+
+      {/* CENTER CONTENT */}
+      <main className="flex-1 p-8 overflow-y-auto">
         <StudySuggestion />
 
-        {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* LEFT COLUMN: Subjects & Analytics */}
-          <div className="flex flex-col gap-8">
-            
-            {/* Subject List Box */}
-            <div className="bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-600/50 h-fit">
-              <h2 className="text-2xl font-semibold mb-4 text-gray-200">Subjects</h2>
-              <form onSubmit={handleCreateSubject} className="flex gap-2 mb-6">
-                <input 
-                  type="text" value={newSubjectName} onChange={(e) => setNewSubjectName(e.target.value)}
-                  placeholder="New Subject..." className="flex-1 bg-gray-700 text-white rounded p-2 outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button type="submit" className="bg-blue-600 hover:bg-blue-700 px-4 rounded font-bold">+</button>
-              </form>
-              <ul className="space-y-2">
-                {subjects.map((subject) => (
-                  <li key={subject.id} className="flex justify-between items-center bg-gray-700 p-3 rounded border border-gray-600">
-                    <span className="font-medium">{subject.name}</span>
-                    <button onClick={() => handleDeleteSubject(subject.id)} className="text-red-400 hover:text-red-300 text-sm">Delete</button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* NEW: Analytics Box */}
-            <ProgressChart tasks={tasks} />
-
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Subjects */}
+          <div className="bg-gray-900/60 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50">
+            <h2 className="text-xl font-semibold mb-4 text-white">Subjects</h2>
+            <form onSubmit={handleCreateSubject} className="flex gap-2 mb-4">
+              <input 
+                type="text" 
+                value={newSubjectName} 
+                onChange={(e) => setNewSubjectName(e.target.value)}
+                placeholder="Add new subject..."
+                className="flex-1 bg-gray-800/80 text-white rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500 border border-gray-700"
+              />
+              <button type="submit" className="bg-blue-600 hover:bg-blue-700 px-4 rounded-lg font-bold">+</button>
+            </form>
+            <ul className="space-y-2">
+              {subjects.map((subject) => (
+                <li key={subject.id} className="flex justify-between items-center bg-gray-800/60 p-3 rounded-lg border border-gray-700/50">
+                  <span className="font-medium text-gray-200">{subject.name}</span>
+                  <button onClick={() => handleDeleteSubject(subject.id)} className="text-red-400 hover:text-red-300 text-sm">Delete</button>
+                </li>
+              ))}
+              {subjects.length === 0 && <p className="text-gray-500 text-sm">No subjects yet</p>}
+            </ul>
           </div>
 
-          {/* RIGHT COLUMN: Tasks */}
-          <div className="lg:col-span-2 bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-600/50">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-200">Tasks</h2>
-            
-            {/* Create Task Form */}
-            <form onSubmit={handleCreateTask} className="flex flex-col md:flex-row gap-3 mb-8 bg-gray-750 p-4 rounded-lg border border-gray-600">
+          {/* Progress Chart */}
+          <div className="bg-gray-900/60 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50">
+            <ProgressChart tasks={tasks} />
+          </div>
+
+          {/* Tasks */}
+          <div className="lg:col-span-2 bg-gray-900/60 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50">
+            <h2 className="text-xl font-semibold mb-4 text-white">Tasks</h2>
+            <form onSubmit={handleCreateTask} className="flex flex-col md:flex-row gap-3 mb-6 p-4 bg-gray-800/40 rounded-lg border border-gray-700/50">
               <input 
-                type="text" value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)}
-                placeholder="What needs to be done?" className="flex-2 bg-gray-700 rounded p-2 outline-none focus:ring-2 focus:ring-green-500"
+                type="text" 
+                value={newTaskTitle} 
+                onChange={(e) => setNewTaskTitle(e.target.value)}
+                placeholder="What needs to be done?" 
+                className="flex-1 bg-gray-800/80 text-white rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-green-500 border border-gray-700"
               />
               <select 
-                value={newTaskSubjectId} onChange={(e) => setNewTaskSubjectId(e.target.value)}
-                className="flex-1 bg-gray-700 rounded p-2 outline-none focus:ring-2 focus:ring-green-500"
+                value={newTaskSubjectId} 
+                onChange={(e) => setNewTaskSubjectId(e.target.value)}
+                className="bg-gray-800/80 text-white rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-green-500 border border-gray-700"
               >
                 <option value="" disabled>Select Subject</option>
                 {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
               <input 
-                type="date" value={newTaskDueDate} onChange={(e) => setNewTaskDueDate(e.target.value)}
-                className="bg-gray-700 rounded p-2 outline-none focus:ring-2 focus:ring-green-500 color-scheme-dark"
+                type="date" 
+                value={newTaskDueDate} 
+                onChange={(e) => setNewTaskDueDate(e.target.value)}
+                className="bg-gray-800/80 text-white rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-green-500 border border-gray-700"
               />
-              <button type="submit" className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors">
-                Add Task
+              <button type="submit" className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">
+                Add
               </button>
             </form>
 
-            {/* Task List */}
             {tasks.length === 0 ? (
-              <p className="text-gray-400 italic text-center py-4">No tasks yet. You are all caught up!</p>
+              <p className="text-gray-500 text-center py-4">No tasks yet. You are all caught up!</p>
             ) : (
               <ul className="space-y-3">
                 {tasks.map((task) => (
-                  <li key={task.id} className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg border ${task.isCompleted ? 'bg-gray-800 border-green-900/50 opacity-60' : 'bg-gray-700 border-gray-600'}`}>
+                  <li key={task.id} className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg border ${task.isCompleted ? 'bg-gray-800/30 border-green-900/30 opacity-60' : 'bg-gray-800/60 border-gray-700/50'}`}>
                     <div className="flex items-center gap-4 mb-2 sm:mb-0">
                       <input 
-                        type="checkbox" checked={task.isCompleted} onChange={() => handleToggleTask(task.id, task.isCompleted)}
+                        type="checkbox" 
+                        checked={task.isCompleted} 
+                        onChange={() => handleToggleTask(task.id, task.isCompleted)}
                         className="w-5 h-5 accent-green-500 cursor-pointer"
                       />
                       <div>
-                        <p className={`text-lg font-medium ${task.isCompleted ? 'line-through text-gray-400' : 'text-white'}`}>
+                        <p className={`text-lg font-medium ${task.isCompleted ? 'line-through text-gray-500' : 'text-white'}`}>
                           {task.title}
                         </p>
                         <p className="text-xs text-gray-400">
@@ -253,9 +256,56 @@ export default function Dashboard() {
               </ul>
             )}
           </div>
-
         </div>
-      </div>
+      </main>
+
+      {/* RIGHT SIDEBAR */}
+      <aside className="w-72 bg-gray-900/60 backdrop-blur-md border-l border-gray-700/50 p-6 overflow-y-auto">
+        <h2 className="text-xl font-semibold text-white mb-6">Ongoing Tasks</h2>
+        
+        <div className="space-y-4">
+          {pendingTasks.length === 0 ? (
+            <p className="text-gray-500 text-sm">No pending tasks</p>
+          ) : (
+            pendingTasks.slice(0, 10).map((task) => (
+              <div key={task.id} className="bg-gray-800/60 p-4 rounded-lg border border-gray-700/50">
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
+                  <div>
+                    <p className="font-medium text-white">{task.title}</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {task.subject?.name || 'No subject'}
+                    </p>
+                    {task.dueDate && (
+                      <p className="text-xs text-orange-400 mt-1">
+                        Due: {new Date(task.dueDate).toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="mt-8 pt-6 border-t border-gray-700/50">
+          <h3 className="text-lg font-semibold text-white mb-4">Subjects</h3>
+          <div className="space-y-2">
+            {subjects.map((subject) => {
+              const subjectTasks = tasks.filter(t => t.subjectId === subject.id && !t.isCompleted);
+              return (
+                <div key={subject.id} className="flex justify-between items-center text-sm">
+                  <span className="text-gray-300">{subject.name}</span>
+                  <span className={`px-2 py-1 rounded-full text-xs ${subjectTasks.length > 0 ? 'bg-blue-600/30 text-blue-400' : 'bg-gray-700 text-gray-500'}`}>
+                    {subjectTasks.length}
+                  </span>
+                </div>
+              );
+            })}
+            {subjects.length === 0 && <p className="text-gray-500 text-sm">No subjects yet</p>}
+          </div>
+        </div>
+      </aside>
     </div>
   );
 }
